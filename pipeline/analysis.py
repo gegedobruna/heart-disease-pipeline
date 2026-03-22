@@ -107,3 +107,10 @@ def age_group_analysis(records):
             "rate": round(counts["presence"] / counts["total"] * 100, 1) if counts["total"] > 0 else 0
         }
     return result
+
+def generate_insights(records):
+    return {
+        "disease_by_sex": disease_rate_by_group(records, "Sex"),
+        "disease_by_chest_pain": disease_rate_by_group(records, "Chest pain type"),
+        "disease_by_age": age_group_analysis(records)
+    }
