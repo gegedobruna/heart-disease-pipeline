@@ -88,7 +88,7 @@ def disease_rate_by_group(records, group_field):
 def age_group_analysis(records):
     groups = {}
     for record in records:
-        if record.get("Age") is None:
+        if record.get("Age") is None or record.get("Heart Disease") is None:
             continue
         age = int(record.get("Age"))
         group_start = age // 10 * 10
