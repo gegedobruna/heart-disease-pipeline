@@ -46,6 +46,7 @@ def field_summary(records, field):
         "mode": mode(values)
     }
 
+
 def value_distribution(values):
     clean = [v for v in values if v is not None]
     if len(clean) == 0:
@@ -59,4 +60,6 @@ def value_distribution(values):
             "pct": round(count / total * 100, 1)
         }
     return result
+
+
 
