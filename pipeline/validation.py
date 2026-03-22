@@ -57,19 +57,3 @@ def validate(row, seen):
         "reasons": reasons
     }       
 
-#testing
-if __name__ == "__main__":
-    from pipeline.ingestion import load_csv
-
-    seen = set()
-    count_valid = 0
-    count_invalid = 0
-    for row in load_csv("data/train.csv"):
-        result = validate(row,seen)
-        if result["valid"]:
-            count_valid += 1
-        else:
-            count_invalid += 1
-    print(f"Valid: {count_valid}")
-    print(f"Invalid: {count_invalid}")
-            
