@@ -1,4 +1,5 @@
 import collections
+from functools import total_ordering
 
 def mean(values):
     clean = [v for v in values if v is not None]
@@ -61,5 +62,55 @@ def value_distribution(values):
         }
     return result
 
+# what % of each group has heart disease
+def disease_rate_by_group(records, group_field):
+    groups = {}
+    for record in records:
+        if record.get("Heart Disease") is None:
+            continue
+        key = record.get(group_field)
+        if key not in groups:
+            groups[key] = {"total": 0, "presence":0}
+        groups[key]["total"] += 1
+        if record.get("Heart Disease") == "Presence":
+            groups[key]["presence"] += 1
+    
+    result = {}
+    for key, counts in groups.items():
+        result[key] = {
+            "total": counts["total"],
+            "presence": counts["presence"],
+            "rate": round(counts["presence"]/counts["total"] * 100, 1)
+        }
+    return result
 
+# what age group has most heart disease
+def age_group_analysis(records):
+    groups = {}
+    for record in records:
+        if record.get("Age") is None:
+            continue
+        age = int(record.get("Age"))
+        group_start = age // 10 * 10
+        key = f"{group_start} - {group_start + 9}"
+        if key not in groups:
+            groups[key] = {"total": 0, "presence": 0}
+        groups[key]["total"] += 1
+        if record.get("Heart Disease") == "Presence":
+            groups[key]["presence"] += 1
+        
+    result = {}
+    for key, counts in groups.items():
+        result[key] = {
+            "total": counts["total"],
+            "presence": counts["presence"],
+            "rate": round(counts["presence"] / counts["total"] * 100, 1) if counts["total"] > 0 else 0
+        }
+    return result
 
+def generate_insights(records):
+    return {
+        "disease_by_sex": disease_rate_by_group(records, "Sex"),
+        "disease_by_chest_pain": disease_rate_by_group(records, "Chest pain type"),
+        "disease_by_age": age_group_analysis(records)
+    }
