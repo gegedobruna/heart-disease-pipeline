@@ -46,17 +46,20 @@ def field_summary(records, field):
         "mode": mode(values)
     }
 
-#testing
-if __name__ == "__main__":
-    from pipeline.ingestion import load_csv
-    from pipeline.validation import validate 
 
-    seen = set()
-    records = []
-    for row in load_csv("data/train.csv"):
-        result = validate(row, seen)
-        if result["valid"]:
-            records.append(result["record"])
-    
-    print("Age summary:", field_summary(records, "Age"))
-    print("Max HR summary:", field_summary(records, "Max HR"))
+def value_distribution(values):
+    clean = [v for v in values if v is not None]
+    if len(clean) == 0:
+        return {}
+    counter = collections.Counter(clean)
+    total = len(clean)
+    result = {}
+    for value, count in counter.most_common():
+        result[value] = {
+            "count": count,
+            "pct": round(count / total * 100, 1)
+        }
+    return result
+
+
+
