@@ -37,6 +37,8 @@ def validate(row, seen):
             reasons.append(f"{field} has wrong type, excpected {rules['type']}")
             continue
 
+        row[field] = coerced
+
         if "min" in rules and coerced < rules["min"]:
             reasons.append(f"{field} is too low: {coerced}")
 
@@ -56,4 +58,3 @@ def validate(row, seen):
         "record": row,
         "reasons": reasons
     }       
-
