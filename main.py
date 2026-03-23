@@ -16,15 +16,9 @@ def parse_args():
     parser.add_argument('--mode', type=str, choices=['full', 'validate', 'report'], default='full', help='Mode to run the pipeline in')
     parser.add_argument('--log', type=bool, default=False, help='Enable logging for rejection reasons')
     return parser.parse_args()
-
-
-def write_report(output_dir, report):
-    os.makedirs(output_dir, exist_ok=True)
-    report_path = os.path.join(output_dir, "report.txt")
-    with open(report_path, "w", encoding="utf-8") as f:
-        f.write(str(report))
-
-
+  
+  # TODO: write writereport()for reporting insights
+  
 def main():
     args = parse_args()
     seen_ids = set()
