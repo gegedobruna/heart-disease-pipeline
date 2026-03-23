@@ -3,7 +3,7 @@ import argparse
 import os
 
 from pipeline.analysis import generate_insights
-from pipeline.exporter import export_clean, export_rejected
+from pipeline.exporter import export_clean, export_rejected, write_report
 from pipeline.ingestion import load_csv
 from pipeline.transformer import decode_record
 from pipeline.validation import validate
@@ -17,7 +17,16 @@ def parse_args():
     parser.add_argument('--log', type=bool, default=False, help='Enable logging for rejection reasons')
     return parser.parse_args()
   
-  # TODO: write writereport()for reporting insights
+  
+    if args.mode in ["full", "report"]:
+        insights = generate_insights(clean_records)
+        report = {
+            "total_rows": len(clean_records) + len(rejected_records),
+            "clean_rows": len(clean_records),
+            "rejected_rows": len(rejected_records),
+        }
+        insights.update(report)
+        write_report(insights, clean_records, args.output)
   
 def main():
     args = parse_args()
