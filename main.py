@@ -17,17 +17,6 @@ def parse_args():
     parser.add_argument('--log', type=bool, default=False, help='Enable logging for rejection reasons')
     return parser.parse_args()
   
-  
-    if args.mode in ["full", "report"]:
-        insights = generate_insights(clean_records)
-        report = {
-            "total_rows": len(clean_records) + len(rejected_records),
-            "clean_rows": len(clean_records),
-            "rejected_rows": len(rejected_records),
-        }
-        insights.update(report)
-        write_report(insights, clean_records, args.output)
-  
 def main():
     args = parse_args()
     seen_ids = set()
@@ -46,15 +35,14 @@ def main():
         export_rejected(rejected_records, args.output)
 
     if args.mode in ["full", "report"]:
+        insights = generate_insights(clean_records)
         report = {
-            "input_file": args.input,
-            "total_records": len(clean_records) + len(rejected_records),
-            "clean_records": len(clean_records),
-            "rejected_records": len(rejected_records),
-            "notes": [],
-            "insights": {},
+            "total_rows": len(clean_records) + len(rejected_records),
+            "clean_rows": len(clean_records),
+            "rejected_rows": len(rejected_records),
         }
-        # TODO: write exporter for reporting insights
+        insights.update(report)
+        write_report(insights, clean_records, args.output)
 
 if __name__ == "__main__":
     try:

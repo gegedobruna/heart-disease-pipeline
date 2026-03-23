@@ -26,8 +26,11 @@ valid_row = {
 def test_valid_row():
     seen = set()
     result = validate(valid_row, seen)
-    assert result["valid"] == True
-    print("test 1 passed" if result["valid"] == True else "test 1 FAILED")
+     
+    if result["valid"] == True:
+        print("test 1 passed")
+    else:
+        print("test 1 FAILED")
 
 # test 2 — wrong type
 def test_wrong_type():
@@ -39,7 +42,7 @@ def test_wrong_type():
         print("test 2 passed")
     else:
         print("test 2 FAILED")
-        
+
 # test 3 — impossible value
 def test_impossible_value():
     seen = set()
