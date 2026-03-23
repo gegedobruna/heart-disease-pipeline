@@ -43,6 +43,9 @@ def main():
         }
         insights.update(report)
         write_report(insights, clean_records, args.output)
+    if args.log == True:
+        for record in rejected_records:
+            print(f"ID: {record['record'].get('id', 'unknown')}, Reasons: {', '.join(record['reasons'])}")
 
 if __name__ == "__main__":
     try:

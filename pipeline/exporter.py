@@ -45,9 +45,9 @@ def write_report(insights, records, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    filepath = output_dir + "/report.txt"
+    filepath = os.path.join(output_dir, "report.txt")
 
-    with open(filepath, "w")  as f:
+    with open(filepath, "w", encoding="utf-8") as f:
 
     # timestamp
         f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
@@ -68,10 +68,13 @@ def write_report(insights, records, output_dir):
         numeric_fields = ["Age", "BP", "Cholesterol", "Max HR", "ST depression"]
         for field in numeric_fields:
             summary = field_summary(records, field)
+            mean_value = "n/a" if summary["mean"] is None else round(summary["mean"], 2)
+            median_value = "n/a" if summary["median"] is None else round(summary["median"], 2)
+            std_value = "n/a" if summary["std_dev"] is None else round(summary["std_dev"], 2)
             f.write(f"{field}:\n")
-            f.write(f"  mean:    {round(summary['mean'], 2)}\n")
-            f.write(f"  median:  {summary['median']}\n")
-            f.write(f"  std_dev: {round(summary['std_dev'], 2)}\n")
+            f.write(f"  mean:    {mean_value}\n")
+            f.write(f"  median:  {median_value}\n")
+            f.write(f"  std_dev: {std_value}\n")
             f.write("\n")
     
         categorical_fields = ["Sex", "Chest pain type", "Heart Disease"]
@@ -88,15 +91,18 @@ def write_report(insights, records, output_dir):
         f.write("-" * 50 + "\n")
     
         sex_data = insights.get("disease_by_sex", {})
+        sex_decode = SCHEMA.get("Sex", {}).get("decode", {})
         for sex, stats in sex_data.items():
-            label = [] #get from schema
-            f.write(f"{label.capitalize()} patients have a heart disease rate of {stats['rate']}%.\n")
+            label = sex_decode.get(sex, sex_decode.get(str(sex), str(sex)))
+            f.write(f"{str(label).capitalize()} patients have a heart disease rate of {stats['rate']}%.\n")
     
         f.write("\n")
     
         chest_data = insights.get("disease_by_chest_pain", {})
+        chest_decode = SCHEMA.get("Chest pain type", {}).get("decode", {})
         for cp, stats in chest_data.items():
-            f.write(f"Chest pain type {cp} has a heart disease rate of {stats['rate']}%.\n")
+            cp_label = chest_decode.get(cp, chest_decode.get(str(cp), str(cp)))
+            f.write(f"Chest pain type {cp_label} has a heart disease rate of {stats['rate']}%.\n")
     
         f.write("\n")
     
@@ -104,8 +110,7 @@ def write_report(insights, records, output_dir):
         f.write("Heart disease rate by age group:\n")
         for age_group, stats in sorted(age_data.items()):
             f.write(f"  Age {age_group}: {stats['rate']}%\n")
-    
-        f.close()
+
         print(f"Wrote report to {filepath}")
 
 
