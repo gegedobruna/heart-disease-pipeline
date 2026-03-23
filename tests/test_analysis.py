@@ -1,49 +1,76 @@
-import unittest
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from pipeline.analysis import mean, median, std_dev, value_distribution, disease_rate_by_group
 
+# test 1 — mean simple
+def test_mean_simple():
+    result = mean([1, 2, 3, 4, 5])
+    if result == 3.0:
+        print("test 1 passed")
+    else:
+        print("test 1 FAILED")
 
-class TestMean(unittest.TestCase):
+# test 2 — mean with nones
+def test_mean_with_nones():
+    result = mean([1, None, 3, None, 5])
+    if result == 3.0:
+        print("test 2 passed")
+    else:
+        print("test 2 FAILED")
 
-    def test_mean_simple(self):
-        self.assertEqual(mean([1, 2, 3, 4, 5]), 3.0)
+# test 3 — mean empty list
+def test_mean_empty_list():
+    result = mean([])
+    if result is None:
+        print("test 3 passed")
+    else:
+        print("test 3 FAILED")
 
-    def test_mean_with_nones(self):
-        self.assertEqual(mean([1, None, 3, None, 5]), 3.0)
+# test 4 — median odd length
+def test_median_odd_length():
+    result = median([1, 2, 3, 4, 5])
+    if result == 3:
+        print("test 4 passed")
+    else:
+        print("test 4 FAILED")
 
-    def test_mean_empty_list(self):
-        self.assertIsNone(mean([]))
+# test 5 — median even length
+def test_median_even_length():
+    result = median([1, 2, 3, 4])
+    if result == 2.5:
+        print("test 5 passed")
+    else:
+        print("test 5 FAILED")
 
+# test 6 — std dev known value
+def test_std_dev_known_value():
+    result = std_dev([2, 4, 4, 4, 5, 5, 7, 9])
+    if abs(result - 2.0) < 1e-9:
+        print("test 6 passed")
+    else:
+        print("test 6 FAILED")
 
-class TestMedian(unittest.TestCase):
-
-    def test_median_odd_length(self):
-        self.assertEqual(median([1, 2, 3, 4, 5]), 3)
-
-    def test_median_even_length(self):
-        self.assertEqual(median([1, 2, 3, 4]), 2.5)
-
-
-class TestStdDev(unittest.TestCase):
-
-    def test_std_dev_known_value(self):
-        # std dev of [2, 4, 4, 4, 5, 5, 7, 9] is exactly 2.0
-        result = std_dev([2, 4, 4, 4, 5, 5, 7, 9])
-        self.assertAlmostEqual(result, 2.0)
-
-
-class TestDiseaseRateByGroup(unittest.TestCase):
-
-    def test_disease_rate_by_group(self):
-        records = [
-            {"Sex": "1", "Heart Disease": "Presence"},
-            {"Sex": "1", "Heart Disease": "Absence"},
-            {"Sex": "0", "Heart Disease": "Presence"},
-            {"Sex": "0", "Heart Disease": "Presence"},
-        ]
-        result = disease_rate_by_group(records, "Sex")
-        self.assertEqual(result["1"]["rate"], 50.0)
-        self.assertEqual(result["0"]["rate"], 100.0)
-
+# test 7 — disease rate by group
+def test_disease_rate_by_group():
+    records = [
+        {"Sex": "1", "Heart Disease": "Presence"},
+        {"Sex": "1", "Heart Disease": "Absence"},
+        {"Sex": "0", "Heart Disease": "Presence"},
+        {"Sex": "0", "Heart Disease": "Presence"},
+    ]
+    result = disease_rate_by_group(records, "Sex")
+    if result["1"]["rate"] == 50.0 and result["0"]["rate"] == 100.0:
+        print("test 7 passed")
+    else:
+        print("test 7 FAILED")
 
 if __name__ == "__main__":
-    unittest.main()
+    test_mean_simple()
+    test_mean_with_nones()
+    test_mean_empty_list()
+    test_median_odd_length()
+    test_median_even_length()
+    test_std_dev_known_value()
+    test_disease_rate_by_group()
+    print("all tests done")
